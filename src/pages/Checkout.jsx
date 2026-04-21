@@ -221,9 +221,9 @@ export default function Checkout() {
               <AlertCircle size={16} /> Instruksi Pembayaran
             </h4>
             <ul className="text-xs text-orange-700 space-y-1 list-disc pl-4 font-medium">
-              <li>Silakan transfer tepat <span className="font-bold underline">Rp {total.toLocaleString()}</span> ke rekening pilihan Anda.</li>
-              <li>Pastikan nama penerima adalah <span className="font-bold">AN NAJMI AS SYFA</span>.</li>
-              <li>Simpan bukti transfer untuk verifikasi jika diperlukan.</li>
+              <li>Silakan transfer tepat <span className="font-bold underline">Rp {total.toLocaleString()}</span> sesuai metode pilihan Anda.</li>
+              <li>Pastikan nama penerima sesuai dengan detail yang tertera pada metode pembayaran.</li>
+              <li>Simpan bukti transfer untuk verifikasi jika dikonfirmasi oleh admin.</li>
             </ul>
           </div>
 
