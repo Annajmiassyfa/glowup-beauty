@@ -77,7 +77,7 @@ export default function Profile() {
               <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                 <h4 className="font-bold text-gray-900">Apa saja metode pembayaran yang tersedia?</h4>
                 <p className="text-gray-500 text-sm mt-2">
-                  Kami mendukung transfer manual ke Bank Mandiri (1730013032272), SeaBank (901836025765), serta E-Wallet (Dana/GoPay/ShopeePay) di nomor 0821-1073-7267. Semua atas nama <strong>AN NAJMI AS SYFA</strong>.
+                   Kami mendukung transfer manual ke Bank Mandiri (1730013032272), SeaBank (901836025765), serta E-Wallet (Dana/GoPay/ShopeePay). Semua atas nama <strong>AN NAJMI AS SYFA</strong>, kecuali QRIS atas nama <strong>Anggita Tri Sundari</strong>.
                 </p>
               </div>
               <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">

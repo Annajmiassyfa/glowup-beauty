@@ -376,7 +376,7 @@ export default function OrderHistory() {
                           </div>
                           <div className="flex justify-between text-xs border-t border-gray-50 pt-2">
                             <span className="text-gray-500">A/N Penerima</span>
-                            <span className="font-bold text-pink-600">AN NAJMI AS SYFA</span>
+                            <span className="font-bold text-pink-600">Anggita Tri Sundari</span>
                           </div>
                         </div>
                       </div>

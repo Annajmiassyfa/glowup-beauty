@@ -250,12 +250,24 @@ export default function Checkout() {
                         <h4 className={`font-bold transition-colors text-sm lg:text-base ${isSelected ? 'text-pink-600' : 'text-gray-900 group-hover:text-pink-500'}`}>{method.name}</h4>
                         <p className="text-xs text-gray-500 leading-relaxed mt-1 font-medium">{method.desc}</p>
                         
-                        {method.type !== 'qris' && isSelected && (
+                        {isSelected && method.type !== 'qris' && (
                           <div className="flex flex-wrap items-center gap-2 mt-3 animate-in slide-in-from-top-1 fade-in duration-300">
                             <code className="bg-white text-gray-800 px-3 py-1.5 rounded-lg text-sm font-mono font-bold tracking-tight border border-pink-200 shadow-sm">
                               {method.number}
                             </code>
                             <span className="text-[10px] bg-pink-100 text-pink-700 px-2 py-1 rounded-md font-bold uppercase tracking-wider">A/N AN NAJMI AS SYFA</span>
+                          </div>
+                        )}
+
+                        {isSelected && method.type === 'qris' && (
+                          <div className="mt-4 p-4 bg-white rounded-2xl border border-pink-100 shadow-sm flex flex-col items-center animate-in slide-in-from-top-1 fade-in duration-300">
+                            <img 
+                              src="/qris.jpg" 
+                              alt="QRIS Payment" 
+                              className="w-40 h-auto rounded-xl border border-gray-100"
+                              onError={(e) => { e.target.src = "https://placehold.co/400?text=QRIS+GlowUp"; }}
+                            />
+                            <p className="text-[10px] font-bold text-gray-400 mt-3 px-3 py-1 bg-gray-50 rounded-full">A/N Anggita Tri Sundari</p>
                           </div>
                         )}
                       </div>
@@ -311,7 +323,7 @@ export default function Checkout() {
                         onError={(e) => { e.target.src = "https://placehold.co/400?text=QRIS+GlowUp"; }}
                       />
                     </div>
-                    <p className="text-[10px] font-bold text-gray-400 mt-4 px-3 py-1 bg-gray-50 rounded-full">A/N AN NAJMI AS SYFA</p>
+                    <p className="text-[10px] font-bold text-gray-400 mt-4 px-3 py-1 bg-gray-50 rounded-full">A/N Anggita Tri Sundari</p>
                   </div>
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50/50 border border-gray-100 rounded-3xl p-6 animate-in fade-in duration-500">
