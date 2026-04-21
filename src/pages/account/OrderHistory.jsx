@@ -412,21 +412,6 @@ export default function OrderHistory() {
                     </div>
                   </div>
                 </div>
-}
-                    </div>
-                  </div>
-                  <div className="space-y-2 text-xs px-1">
-                    <div className="flex justify-between"><span className="text-gray-500">Subtotal Produk</span><span>Rp {selectedOrder.subtotal.toLocaleString()}</span></div>
-                    <div className="flex justify-between"><span className="text-gray-500">Ongkos Kirim</span><span>Rp {selectedOrder.shippingCost.toLocaleString()}</span></div>
-                    {selectedOrder.discountAmount > 0 && (
-                      <div className="flex justify-between text-green-600"><span>Diskon</span><span>-Rp {selectedOrder.discountAmount.toLocaleString()}</span></div>
-                    )}
-                    <div className="flex justify-between font-bold text-sm text-gray-900 pt-2 border-t mt-2">
-                      <span>Total Belanja</span>
-                      <span className="text-pink-600">Rp {selectedOrder.grandTotal.toLocaleString()}</span>
-                    </div>
-                  </div>
-                </div>
               </div>
             )}
 
