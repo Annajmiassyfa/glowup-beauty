@@ -4,11 +4,12 @@ import { useAppContext } from '../context/AppContext';
 import { createOrder, fetchAddresses } from '../services/api';
 
 const PAYMENT_METHODS = [
-  'Transfer Bank Mandiri (1730013032272)',
-  'Transfer SeaBank (901836025765)',
-  'Dana (082110737267)',
-  'GoPay (082110737267)',
-  'ShopeePay (082110737267)',
+  { id: 'QRIS', name: 'QRIS (Semua Pembayaran)', type: 'qris', number: '-', icon: '📱', desc: 'Scan barcode menggunakan m-banking atau aplikasi e-wallet apa saja.' },
+  { id: 'Mandiri', name: 'Transfer Bank Mandiri', type: 'bank', number: '1730013032272', icon: '🏦', desc: 'Transfer antar bank atau sesama bank ke rekening Mandiri pusat.' },
+  { id: 'SeaBank', name: 'Transfer SeaBank', type: 'bank', number: '901836025765', icon: '🏧', desc: 'Transfer tanpa biaya admin (gratis) ke rekening SeaBank.' },
+  { id: 'Dana', name: 'Saldo Dana', type: 'ewallet', number: '082110737267', icon: '🟢', desc: 'Kirim saldo Dana langsung ke nomor agen GlowUp.' },
+  { id: 'GoPay', name: 'Saldo GoPay', type: 'ewallet', number: '082110737267', icon: '🔵', desc: 'Kirim saldo GoPay langsung ke nomor agen GlowUp.' },
+  { id: 'ShopeePay', name: 'Saldo ShopeePay', type: 'ewallet', number: '082110737267', icon: '🟠', desc: 'Kirim saldo ShopeePay langsung ke nomor agen GlowUp.' },
 ];
 
 export default function Checkout() {
@@ -67,7 +68,7 @@ export default function Checkout() {
         shippingCost: shippingFee,
         discountAmount: 0,
         grandTotal: total,
-        paymentMethod: selectedMethod,
+        paymentMethod: selectedMethod.type === 'qris' ? 'QRIS' : `${selectedMethod.name} (${selectedMethod.number})`,
         shippingSnapshot: {
           recipientName: selectedAddress.recipientName,
           phone: selectedAddress.phone,
@@ -227,54 +228,44 @@ export default function Checkout() {
           </div>
 
           <div className="space-y-4 mb-8">
-            {[
-              { id: 'Mandiri', name: 'Transfer Bank Mandiri', number: '1730013032272', icon: '🏦' },
-              { id: 'SeaBank', name: 'Transfer SeaBank', number: '901836025765', icon: '🏧' },
-              { id: 'Dana', name: 'Dana', number: '082110737267', icon: '📱' },
-              { id: 'GoPay', name: 'GoPay', number: '082110737267', icon: '💳' },
-              { id: 'ShopeePay', name: 'ShopeePay', number: '082110737267', icon: '🛍️' },
-            ].map(method => {
-              const methodValue = `${method.name} (${method.number})`;
-              const isSelected = selectedMethod === methodValue;
+            {PAYMENT_METHODS.map(method => {
+              const isSelected = selectedMethod.id === method.id;
               
               return (
                 <div 
                   key={method.id}
-                  onClick={() => setSelectedMethod(methodValue)}
+                  onClick={() => setSelectedMethod(method)}
                   className={`group relative p-5 rounded-2xl border-2 cursor-pointer transition-all ${
                     isSelected
-                      ? 'border-pink-500 bg-pink-50/30'
-                      : 'border-gray-100 hover:border-pink-200 bg-white'
+                      ? 'border-pink-500 bg-pink-50/40 shadow-sm'
+                      : 'border-gray-100 hover:border-pink-200 bg-white shadow-sm hover:shadow-md'
                   }`}
                 >
                   <div className="flex items-start justify-between">
-                    <div className="flex gap-4">
-                      <span className="text-2xl mt-1">{method.icon}</span>
-                      <div>
-                        <h4 className="font-bold text-gray-900 group-hover:text-pink-600 transition-colors">{method.name}</h4>
-                        <div className="flex items-center gap-2 mt-1">
-                          <code className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-sm font-mono font-bold tracking-tight">
-                            {method.number}
-                          </code>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              navigator.clipboard.writeText(method.number);
-                              showToast('Nomor berhasil disalin!');
-                            }}
-                            className="p-1.5 hover:bg-white rounded-lg border border-transparent hover:border-gray-200 text-gray-400 hover:text-pink-500 transition-all"
-                            title="Salin Nomor"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-                          </button>
-                        </div>
-                        <p className="text-[10px] text-gray-400 font-bold uppercase mt-2 tracking-widest">A/N AN NAJMI AS SYFA</p>
+                    <div className="flex gap-4 w-full pr-8">
+                      <div className={`w-12 h-12 flex items-center justify-center rounded-[14px] text-2xl transition-colors ${isSelected ? 'bg-pink-100/80 shadow-inner' : 'bg-gray-50 border border-gray-100 group-hover:bg-pink-50'}`}>
+                        {method.icon}
+                      </div>
+                      <div className="flex-1 mt-0.5">
+                        <h4 className={`font-bold transition-colors text-sm lg:text-base ${isSelected ? 'text-pink-600' : 'text-gray-900 group-hover:text-pink-500'}`}>{method.name}</h4>
+                        <p className="text-xs text-gray-500 leading-relaxed mt-1 font-medium">{method.desc}</p>
+                        
+                        {method.type !== 'qris' && isSelected && (
+                          <div className="flex flex-wrap items-center gap-2 mt-3 animate-in slide-in-from-top-1 fade-in duration-300">
+                            <code className="bg-white text-gray-800 px-3 py-1.5 rounded-lg text-sm font-mono font-bold tracking-tight border border-pink-200 shadow-sm">
+                              {method.number}
+                            </code>
+                            <span className="text-[10px] bg-pink-100 text-pink-700 px-2 py-1 rounded-md font-bold uppercase tracking-wider">A/N AN NAJMI AS SYFA</span>
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                      isSelected ? 'bg-pink-500 border-pink-500' : 'border-gray-200'
-                    }`}>
-                      {isSelected && <CheckCircle size={14} className="text-white" />}
+                    <div className="absolute top-5 right-5">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                        isSelected ? 'bg-pink-500 border-pink-500' : 'border-gray-300'
+                      }`}>
+                        {isSelected && <div className="w-2 h-2 bg-white rounded-full" />}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -306,42 +297,66 @@ export default function Checkout() {
 
           <div className="bg-white border-2 border-dashed border-gray-200 rounded-3xl p-6 mb-8">
             <div className="flex flex-col md:flex-row gap-8 items-center">
-              {/* QRIS Image */}
-              <div className="w-full md:w-1/2 flex flex-col items-center">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Scan QRIS di Bawah</p>
-                <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 w-full max-w-[240px]">
-                  <img 
-                    src="/qris.jpg" 
-                    alt="QRIS Payment" 
-                    className="w-full h-auto rounded-lg"
-                    onError={(e) => { e.target.src = "https://placehold.co/400?text=QRIS+GlowUp"; }}
-                  />
-                </div>
-                <p className="text-[10px] text-gray-400 mt-3 text-center">A/N AN NAJMI AS SYFA</p>
+              
+              {/* Conditional Method Visual (QRIS vs Bank Detail) */}
+              <div className="w-full md:w-1/2 flex flex-col items-center justify-center min-h-[260px]">
+                {selectedMethod.type === 'qris' ? (
+                  <div className="animate-in fade-in zoom-in-95 duration-500 text-center flex flex-col items-center">
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Scan QRIS di Bawah</p>
+                    <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 w-full max-w-[240px] transform hover:scale-105 transition-transform">
+                      <img 
+                        src="/qris.jpg" 
+                        alt="QRIS Payment" 
+                        className="w-full h-auto rounded-lg"
+                        onError={(e) => { e.target.src = "https://placehold.co/400?text=QRIS+GlowUp"; }}
+                      />
+                    </div>
+                    <p className="text-[10px] font-bold text-gray-400 mt-4 px-3 py-1 bg-gray-50 rounded-full">A/N AN NAJMI AS SYFA</p>
+                  </div>
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50/50 border border-gray-100 rounded-3xl p-6 animate-in fade-in duration-500">
+                    <div className="w-16 h-16 bg-white shadow-sm border border-gray-100 rounded-[14px] flex items-center justify-center text-3xl mb-4">
+                      {selectedMethod.icon}
+                    </div>
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">{selectedMethod.name}</p>
+                    <p className="text-2xl md:text-3xl font-mono font-bold text-gray-900 tracking-tight my-2">
+                      {selectedMethod.number}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1 mb-6 font-medium">
+                      A/N <span className="text-pink-600 font-bold">AN NAJMI AS SYFA</span>
+                    </p>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(selectedMethod.number);
+                        showToast('Nomor berhasil disalin!');
+                      }}
+                      className="flex items-center gap-2 px-5 py-2.5 bg-white border-2 border-gray-200 rounded-xl text-xs font-bold text-gray-700 hover:border-pink-400 hover:text-pink-600 transition-colors shadow-sm"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                      Salin Instan
+                    </button>
+                  </div>
+                )}
               </div>
 
-              {/* Instructions Detail */}
+              {/* Order Summary & Final Instructions */}
               <div className="w-full md:w-1/2 space-y-4">
-                <div className="bg-gray-50 p-4 rounded-2xl">
-                  <p className="text-xs text-gray-400 font-bold uppercase mb-1">Total yang Harus Dibayar</p>
-                  <p className="text-2xl font-bold text-pink-600">Rp {placedOrder?.grandTotal?.toLocaleString()}</p>
+                <div className="bg-pink-50/60 border border-pink-100/80 p-5 rounded-2xl text-center md:text-left transition-all">
+                  <p className="text-[10px] text-pink-500 font-bold uppercase tracking-widest mb-1.5">Total yang Harus Dibayar</p>
+                  <p className="text-3xl font-bold text-pink-600">Rp {placedOrder?.grandTotal?.toLocaleString()}</p>
                 </div>
 
-                <div className="space-y-3">
-                  <p className="text-xs font-bold text-gray-900">Metode Alternatif:</p>
-                  <div className="text-xs text-gray-600 space-y-1">
-                    <p>• Bank Mandiri: <span className="font-mono font-bold text-gray-900">1730013032272</span></p>
-                    <p>• SeaBank: <span className="font-mono font-bold text-gray-900">901836025765</span></p>
-                    <p>• Dana/GoPay: <span className="font-mono font-bold text-gray-900">082110737267</span></p>
+                <div className="p-5 bg-red-50 rounded-2xl border border-red-100 flex gap-4 mt-2">
+                  <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0 border border-red-200">
+                    <AlertCircle size={20} className="text-red-500" />
                   </div>
-                </div>
-
-                <div className="p-3 bg-red-50 rounded-xl border border-red-100 flex gap-3">
-                  <AlertCircle size={16} className="text-red-500 shrink-0 mt-0.5" />
-                  <p className="text-[10px] text-red-700 leading-relaxed font-medium">
-                    Batas waktu pembayaran adalah <span className="font-bold text-red-600">15 menit</span>. 
-                    Jika pembayaran tidak diverifikasi oleh admin dalam waktu tersebut, pesanan akan dibatalkan otomatis.
-                  </p>
+                  <div>
+                    <p className="font-bold text-red-800 text-sm mb-1.5">Batas Waktu Pembayaran</p>
+                    <p className="text-xs text-red-700/80 leading-relaxed font-medium">
+                      Anda memiliki waktu <span className="font-bold text-red-600">15 menit</span> untuk melakukan transfer/scan dan menunggu verifikasi admin. 
+                      Lewat dari batas tersebut, sistem akan membatalkan pesanan secara otomatis.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
