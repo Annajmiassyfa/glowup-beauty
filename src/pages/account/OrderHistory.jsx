@@ -320,7 +320,27 @@ export default function OrderHistory() {
                   <h4 className="font-bold text-gray-900 mb-3 border-b pb-2">Daftar Produk</h4>
                   <div className="space-y-4 mt-3">
                     {selectedOrder.items.map((item, i) => (
-                      <div k                {/* Payment summary */}
+                      <div key={i} className="flex gap-4">
+                        <img
+                          src={itemImage(item)}
+                          alt={item.product?.name}
+                          className="w-16 h-16 rounded-xl bg-gray-100 object-cover border border-gray-100"
+                          onError={e => { e.target.src = `https://picsum.photos/seed/${item.productId}/64/64`; }}
+                        />
+                        <div className="flex-1">
+                          <p className="font-bold text-gray-900 line-clamp-1">{item.product?.name || 'Produk'}</p>
+                          <p className="text-xs text-gray-500 mt-0.5">x{item.qty}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-pink-600">Rp {item.price.toLocaleString()}</p>
+                          <p className="text-xs text-gray-400">@{item.qty}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Payment summary */}
                 <div className="border-t pt-4">
                   <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-1"><CreditCard size={14} /> Ringkasan Pembayaran</h4>
                   
